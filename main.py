@@ -18,32 +18,66 @@ class MainWindow(QMainWindow):
         self.ui.actionAbout_my_Game.triggered.connect(self.about)
         self.ui.actionExit.triggered.connect(self.exit)
         self.array=[[None for i in range (9)] for j in range(9)]
+        for i in range(9):
+            for j in range(9):
+                New_cell=QLineEdit()
+                self.ui.gridLayout.addWidget(New_cell , i ,j)
+                New_cell.textChanged.connect(partial(self.validation , i ,j))
+                self.array[i][j]=New_cell
         self.new_game()
-    
     
 
     def new_game(self):
         puzzle = Sudoku(3 ,seed=random.randrange(1000)).difficulty(0.5)
         for i in range(9):
             for j in range(9):
-                New_cell=QLineEdit()
-                self.ui.gridLayout.addWidget(New_cell , i ,j)
+                self.array[i][j].setReadOnly(False)
                 if puzzle.board[i][j] !=None:
-                    New_cell.setText(str(puzzle.board[i][j]))
-                    New_cell.setReadOnly(True)
-                New_cell.textChanged.connect(partial(self.validation , i ,j))
-                self.array[i][j]=New_cell
+                    self.array[i][j].setText(str(puzzle.board[i][j]))
+                    self.array[i][j].setReadOnly(True)
+                else:
+                    self.array[i][j].setText("")
 
+    
+    def check(self):
+        # for i in range (9):
+        self.count=0
+        for j in range(0,9):
+                i=self.count
+                number1=self.array[i][j].text()
+        #         number2=self.array[i][1].text()
+                print(i,j,"andis")
+                print(number1)
+        #         print(number2)
+        #         # print(self.array[i][])
+        #         if number1==number2:
+        #             self.array[i][j].setStyleSheet("border-radius:29px;" and "background-color: rgb(170, 85, 255)")
+        #             print("NO")
+        #             return False
+        # list_1=[]
+        
+        # for j in range(0,9):
+        #     list_1.append(self.array[0][j].text())
+        #     num=text
+        # print(num)
+        # if not num in list_1:
+        #             print("True")
+        # else:
+        #             print("False")
+
+        
+                
     def open_file(self):
         file_path=QFileDialog.getOpenFileName(self,"Open file...")[0]
         f=open(file_path, "r")
         big_text=f.read()
-        rows=big_text.split("/n")
+        rows=big_text.split("\n")
         puzzle_board=[[None for i in range(9)] for j in range(9)]
         for i in range (len(rows)):
             cells=rows[i].split(" ")
             for j in range (len(cells)):
-                puzzle_board[i][j]=int(cells[j])
+                puzzle_board[i][j]=cells[j]
+            
 
     def help(self):
             msg_box=QMessageBox()
@@ -58,14 +92,14 @@ class MainWindow(QMainWindow):
     def validation(self,i , j , text):
         if text not in ["1","2","3","4","5","6","7","8","9"]:
             self.array[i][j].setText("")
+        
+        self.check()
             
     def exit(self):
         msg_box=QMessageBox()
         msg_box.setText("Do you want to Exit?")
         msg_box.exec_()
         exit(0)
-
-
 
 
 if __name__ == "__main__":
