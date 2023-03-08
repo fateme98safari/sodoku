@@ -21,14 +21,16 @@ class MainWindow(QMainWindow):
         for i in range(9):
             for j in range(9):
                 New_cell=QLineEdit()
+
+                New_cell.setStyleSheet("border-radius:29px;" and "background-color: rgb(255, 255, 255)")
                 self.ui.gridLayout.addWidget(New_cell , i ,j)
-                New_cell.textChanged.connect(partial(self.validation , i ,j))
+                New_cell.textChanged.connect(partial(self.check , i ,j))
                 self.array[i][j]=New_cell
         self.new_game()
     
 
     def new_game(self):
-        puzzle = Sudoku(3 ,seed=random.randrange(1000)).difficulty(0.5)
+        puzzle = Sudoku(3 ,seed=random.randint(1,1000)).difficulty(0.5)
         for i in range(9):
             for j in range(9):
                 self.array[i][j].setReadOnly(False)
@@ -39,34 +41,23 @@ class MainWindow(QMainWindow):
                     self.array[i][j].setText("")
 
     
-    def check(self):
-        # for i in range (9):
-        self.count=0
-        for j in range(0,9):
-                i=self.count
-                number1=self.array[i][j].text()
-        #         number2=self.array[i][1].text()
-                print(i,j,"andis")
-                print(number1)
-        #         print(number2)
-        #         # print(self.array[i][])
-        #         if number1==number2:
-        #             self.array[i][j].setStyleSheet("border-radius:29px;" and "background-color: rgb(170, 85, 255)")
-        #             print("NO")
-        #             return False
-        # list_1=[]
+    def check(self,i,j,text):
+        if text not in ["1","2","3","4","5","6","7","8","9"]:
+            self.array[i][j].setText("")
+        list_raw=[None for m in range (9)]
+        i=0
+        k=0
+        for m in range (0,9):
+                j=k
+                list_raw[m]=self.array[i][j].text()
+                k+=1
+        for row in list_raw:
+                if text in list_raw:
+                #  self.array[i][j].setStyleSheet("background-color: rgb(255, 0, 0)")
+                    print("KKKKKKKKKKKK")
+                    return False
         
-        # for j in range(0,9):
-        #     list_1.append(self.array[0][j].text())
-        #     num=text
-        # print(num)
-        # if not num in list_1:
-        #             print("True")
-        # else:
-        #             print("False")
-
-        
-                
+            
     def open_file(self):
         file_path=QFileDialog.getOpenFileName(self,"Open file...")[0]
         f=open(file_path, "r")
@@ -89,9 +80,6 @@ class MainWindow(QMainWindow):
         msg_box.setText("This project is my first sodoku Game,it writen with python and designed with Qt")
         msg_box.exec_()
 
-    def validation(self,i , j , text):
-        if text not in ["1","2","3","4","5","6","7","8","9"]:
-            self.array[i][j].setText("")
         
         self.check()
             
